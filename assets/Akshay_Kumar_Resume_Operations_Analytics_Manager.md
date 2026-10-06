@@ -5,7 +5,7 @@ linkedin.com/in/akshaykumardl | github.com/akbknight | akbknight.github.io
 ---
 
 ## PROFESSIONAL SUMMARY
-STEM MBA candidate at American University Kogod School of Business (May 2027, GPA 3.17/4.0) with 7+ years of experience in enterprise operations, capacity planning, and business analytics. Commended by the U.S. Ambassador for engineering decision-support systems that increased daily visa adjudication throughput by 30% and cutting service triage time by 65% across diplomatic posts in India. Proven track record leading digital transformation across federal agencies and enterprise financial services.
+STEM MBA candidate at American University Kogod School of Business (May 2027, GPA 3.17/4.0) with 7+ years of experience in enterprise operations, capacity planning, and business analytics. Commended by the U.S. Ambassador for engineering decision-support systems that increased daily visa adjudication throughput by 30% and cutting service triage time by 65% across diplomatic posts in India. Led digital transformation initiatives across federal agencies and enterprise financial services.
 
 ---
 

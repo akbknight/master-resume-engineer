@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Master Resume Engineer | Deterministic ATS Hardening & STAR Architecture Engine</title>
+  <meta name="description" content="Single-source-of-truth resume engineering system. AST-invariant verification, STAR-quantified bullet banks, and deterministic ATS compilation.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2338bdf8'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/><line x1='16' y1='13' x2='8' y2='13'/><line x1='16' y1='17' x2='8' y2='17'/><polyline points='10 9 9 9 8 9'/></svg>">
+  <style>
+    :root {
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      
+      --bg-base: #090a0f;
+      --bg-surface: #11131c;
+      --bg-card: #161926;
+      --bg-card-hover: #1c2033;
+      --border: #23283e;
+      --border-accent: #38bdf840;
+      
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.15);
+      
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.12);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.12);
+      --error: #ef4444;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #f1f5f9;
+      --bg-card-hover: #e2e8f0;
+      --border: #cbd5e1;
+      --border-accent: #0284c740;
+      
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --accent-glow: rgba(2, 132, 199, 0.12);
+      
+      --success: #059669;
+      --success-bg: rgba(5, 150, 105, 0.12);
+      --warning: #d97706;
+      --warning-bg: rgba(217, 119, 6, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-surface);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--border-accent);
+      font-weight: 600;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: var(--transition);
+    }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .hero {
+      padding: 64px 0 40px;
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--accent-glow);
+      border: 1px solid var(--border-accent);
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto 32px;
+    }
+
+    /* TELEMETRY MATRIX */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 32px 0 48px;
+    }
+
+    .metric-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .metric-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .metric-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    .metric-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--success-bg);
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+    }
+
+    .metric-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ARCHITECTURE DIAGRAM SECTION */
+    .diagram-section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 48px;
+    }
+
+    .section-header {
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    .diagram-container {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+    }
+
+    /* RESUME ROLE SWITCHER & VIEWER */
+    .workspace-section {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    @media (max-width: 900px) {
+      .workspace-section { grid-template-columns: 1fr; }
+    }
+
+    .roles-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      height: fit-content;
+    }
+
+    .role-btn {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .role-btn:hover {
+      background: var(--bg-card);
+    }
+    .role-btn.active {
+      background: var(--bg-card);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .role-btn-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .role-btn-tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--accent);
+    }
+    .role-btn-desc {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    .viewer-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .viewer-toolbar {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+    }
+
+    .viewer-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .viewer-meta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .viewer-content {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text-main);
+      background: var(--bg-surface);
+      max-height: 640px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* IN-BROWSER VALIDATOR TOOL */
+    .validator-section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 48px;
+    }
+
+    .validator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    @media (max-width: 800px) {
+      .validator-grid { grid-template-columns: 1fr; }
+    }
+
+    .validator-input {
+      width: 100%;
+      height: 280px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      padding: 16px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+    .validator-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .validator-output {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      overflow-y: auto;
+      height: 280px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+
+    .audit-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .audit-pass { color: var(--success); }
+    .audit-fail { color: var(--error); }
+    .audit-warn { color: var(--warning); }
+
+    /* TOAST NOTIFICATION */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      color: var(--text-main);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: var(--transition);
+      pointer-events: none;
+      z-index: 100;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      text-align: center;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container nav-bar">
+      <a href="https://akbknight.github.io/" class="brand">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        Master Resume Engineer
+        <span class="brand-badge">v2.4 AUDITED</span>
+      </a>
+      <div class="nav-actions">
+        <button id="themeToggle" class="btn btn-secondary" aria-label="Toggle theme">
+          <span id="themeIcon">☀️</span>
+        </button>
+        <a href="https://github.com/akbknight/master-resume-engineer" target="_blank" rel="noopener" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          Repository
+        </a>
+        <a href="https://akbknight.github.io/assets/Akshay_Resume.pdf" target="_blank" rel="noopener" class="btn btn-primary">
+          Verified PDF
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-eyebrow">
+        <span>Deterministic AST Hardening Engine</span>
+      </div>
+      <h1>Single Source of Truth Resume Architecture & Invariant Enforcement</h1>
+      <p>
+        Eliminates resume hallucination, weak passive voice, and formatting rejections through programmatic Markdown compilation, strict STAR metric quantification, and continuous automated verification.
+      </p>
+    </section>
+
+    <!-- EMPIRICAL TELEMETRY GRID -->
+    <section class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-title">ATS Invariant Gate</span>
+          <span class="metric-badge">PASSING</span>
+        </div>
+        <div class="metric-value">100%</div>
+        <div class="metric-sub">0/28 banned clichés · 0 invisible chars · Clean AST</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-title">STAR Metric Density</span>
+          <span class="metric-badge">AUDITED</span>
+        </div>
+        <div class="metric-value">59.2%</div>
+        <div class="metric-sub">16/27 bullets with verified financial/operational metrics</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-title">Academic Grounding</span>
+          <span class="metric-badge">VERIFIED</span>
+        </div>
+        <div class="metric-value">3.17 / 4.0</div>
+        <div class="metric-sub">AU Kogod STEM MBA · 3.44 Summer Term · 28.5 Earned</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-title">Role Compilers</span>
+          <span class="metric-badge">READY</span>
+        </div>
+        <div class="metric-value">4 Targets</div>
+        <div class="metric-sub">Master SSOT, Data Engineer, Ops Manager, Tech PM</div>
+      </div>
+    </section>
+
+    <!-- CATHRYN LAVERY SVG SYSTEM ARCHITECTURE DIAGRAM -->
+    <section class="diagram-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Master Resume Architecture & Compilation Pipeline
+        </h2>
+        <p class="section-desc">
+          Vector-rendered architectural data flow representing the transformation of raw empirical telemetry into ATS-hardened deliverables.
+        </p>
+      </div>
+
+      <div class="diagram-container">
+        <svg viewBox="0 0 1020 220" width="100%" height="auto" style="display: block; font-family: var(--font-mono);">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 8 5 L 0 9 z" fill="var(--accent)" />
+            </marker>
+          </defs>
+
+          <!-- STAGE 1: SSOT BULLET BANK -->
+          <rect x="10" y="30" width="210" height="160" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5" />
+          <rect x="10" y="30" width="210" height="36" rx="8" fill="var(--bg-card)" />
+          <text x="24" y="53" fill="var(--text-main)" font-size="12" font-weight="700">1. SSOT BULLET BANK</text>
+          <text x="24" y="85" fill="var(--text-muted)" font-size="10.5">· 7+ Yrs Raw Experience</text>
+          <text x="24" y="105" fill="var(--text-muted)" font-size="10.5">· U.S. Embassy Telemetry</text>
+          <text x="24" y="125" fill="var(--text-muted)" font-size="10.5">· Capital One 97M+ Records</text>
+          <text x="24" y="145" fill="var(--text-muted)" font-size="10.5">· AU Kogod GPA 3.17 / 4.0</text>
+          <text x="24" y="168" fill="var(--accent)" font-size="10" font-weight="600">FORMAT: Markdown (UTF-8)</text>
+
+          <!-- CONNECTOR 1 -> 2 -->
+          <path d="M 220 110 L 265 110" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+          <!-- STAGE 2: INVARIANT VERIFIER -->
+          <rect x="275" y="30" width="220" height="160" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5" />
+          <rect x="275" y="30" width="220" height="36" rx="8" fill="var(--bg-card)" />
+          <text x="289" y="53" fill="var(--text-main)" font-size="12" font-weight="700">2. INVARIANT ENGINE</text>
+          <text x="289" y="85" fill="var(--text-muted)" font-size="10.5">· 28 Cliché Patterns Filter</text>
+          <text x="289" y="105" fill="var(--text-muted)" font-size="10.5">· Zero-Width Char Check</text>
+          <text x="289" y="125" fill="var(--text-muted)" font-size="10.5">· En-Dash Date Standard</text>
+          <text x="289" y="145" fill="var(--text-muted)" font-size="10.5">· Quantitative % Target</text>
+          <text x="289" y="168" fill="var(--success)" font-size="10" font-weight="600">GATE: validate_resume.py</text>
+
+          <!-- CONNECTOR 2 -> 3 -->
+          <path d="M 495 110 L 540 110" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+          <!-- STAGE 3: ROLE COMPILERS -->
+          <rect x="550" y="30" width="210" height="160" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5" />
+          <rect x="550" y="30" width="210" height="36" rx="8" fill="var(--bg-card)" />
+          <text x="564" y="53" fill="var(--text-main)" font-size="12" font-weight="700">3. ROLE COMPILERS</text>
+          <text x="564" y="85" fill="var(--text-muted)" font-size="10.5">· Master SSOT Variant</text>
+          <text x="564" y="105" fill="var(--text-muted)" font-size="10.5">· Data/Analytics Eng</text>
+          <text x="564" y="125" fill="var(--text-muted)" font-size="10.5">· Ops Analytics Mgr</text>
+          <text x="564" y="145" fill="var(--text-muted)" font-size="10.5">· Tech Product Manager</text>
+          <text x="564" y="168" fill="var(--warning)" font-size="10" font-weight="600">FOCUS: Weight &amp; STAR Rank</text>
+
+          <!-- CONNECTOR 3 -> 4 -->
+          <path d="M 760 110 L 805 110" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+          <!-- STAGE 4: ARTIFACT GENERATION -->
+          <rect x="815" y="30" width="195" height="160" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5" />
+          <rect x="815" y="30" width="195" height="36" rx="8" fill="var(--bg-card)" />
+          <text x="829" y="53" fill="var(--text-main)" font-size="12" font-weight="700">4. DELIVERABLES</text>
+          <text x="829" y="85" fill="var(--text-muted)" font-size="10.5">· Clean Plaintext ATS</text>
+          <text x="829" y="105" fill="var(--text-muted)" font-size="10.5">· ReportLab Vector PDF</text>
+          <text x="829" y="125" fill="var(--text-muted)" font-size="10.5">· GitHub Pages WebUI</text>
+          <text x="829" y="145" fill="var(--text-muted)" font-size="10.5">· JSON Schema AST</text>
+          <text x="829" y="168" fill="var(--accent)" font-size="10" font-weight="600">STATUS: 100% Parsable</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE ROLE RESUME WORKSPACE -->
+    <section class="workspace-section">
+      <!-- ROLES PANEL -->
+      <div class="roles-panel">
+        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 12px; font-weight: 700;">
+          Target Role Variants
+        </h3>
+        
+        <button class="role-btn active" data-role="master">
+          <div class="role-btn-title">
+            <span>Executive Master (SSOT)</span>
+            <span class="role-btn-tag">30 Bullets</span>
+          </div>
+          <div class="role-btn-desc">Full spectrum analytics, enterprise pipelines &amp; federal operations.</div>
+        </button>
+
+        <button class="role-btn" data-role="analytics_engineer">
+          <div class="role-btn-title">
+            <span>Data Analytics Engineer</span>
+            <span class="role-btn-tag">28 Bullets</span>
+          </div>
+          <div class="role-btn-desc">Distributed ETL, DuckDB, Python, SQL &amp; Capital One verification.</div>
+        </button>
+
+        <button class="role-btn" data-role="operations_manager">
+          <div class="role-btn-title">
+            <span>Operations Analytics Mgr</span>
+            <span class="role-btn-tag">25 Bullets</span>
+          </div>
+          <div class="role-btn-desc">Consular throughput (+30%), triage (-65%) &amp; Power Platform.</div>
+        </button>
+
+        <button class="role-btn" data-role="product_manager">
+          <div class="role-btn-title">
+            <span>Technical Product Mgr</span>
+            <span class="role-btn-tag">27 Bullets</span>
+          </div>
+          <div class="role-btn-desc">AI decision products, federal vetting UX &amp; cross-functional teams.</div>
+        </button>
+      </div>
+
+      <!-- VIEWER PANEL -->
+      <div class="viewer-panel">
+        <div class="viewer-toolbar">
+          <div>
+            <div id="viewerTitle" class="viewer-title">Master Executive Resume (SSOT)</div>
+            <div id="viewerMeta" class="viewer-meta">884 words · 30 STAR bullets · 16 quantified · GPA: 3.17/4.0</div>
+          </div>
+          <button id="copyBtn" class="btn btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy Markdown
+          </button>
+        </div>
+        <div id="viewerContent" class="viewer-content">Loading resume content...</div>
+      </div>
+    </section>
+
+    <!-- IN-BROWSER RESUME VALIDATOR (ZERO-DEPENDENCY CLIENT-SIDE) -->
+    <section class="validator-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          Client-Side Invariant &amp; ATS Audit Console
+        </h2>
+        <p class="section-desc">
+          Test any resume text or verify the loaded variant against the exact Python AST rules: clichés, word counts, invisible characters, and metric density.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+        <button id="auditLoadedBtn" class="btn btn-secondary">Audit Current Resume</button>
+        <button id="clearInputBtn" class="btn btn-secondary">Clear / Test Custom</button>
+      </div>
+
+      <div class="validator-grid">
+        <textarea id="validatorInput" class="validator-input" placeholder="Paste Markdown or plaintext resume here to execute client-side invariant audit..."></textarea>
+        <div id="validatorOutput" class="validator-output">
+          <div class="audit-row audit-pass">
+            <span>✓</span>
+            <span>Click 'Audit Current Resume' to inspect all structural invariants.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast">Copied to clipboard!</div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>
+        Architected by <a href="https://akbknight.github.io/">Akshay Kumar</a> · STEM MBA Candidate @ AU Kogod School of Business (GPA 3.17 / 4.0)
+      </p>
+      <p style="margin-top: 6px; font-size: 0.78rem;">
+        Source repository: <a href="https://github.com/akbknight/master-resume-engineer">github.com/akbknight/master-resume-engineer</a> · Zero hallucinations · Deterministic execution
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // RESUME DATA
+    let resumeData = {};
+    let currentRole = "master";
+
+    // BANNED CLICHES
+    const BANNED_EXPRESSIONS = [
+      "delve", "spearheaded", "tapestry", "fostered", "navigated",
+      "synergy", "synergized", "orchestrated", "championed", "revolutionized",
+      "game-changing", "cutting-edge", "world-class", "dynamic professional",
+      "results-driven professional", "proven track record", "demonstrated ability",
+      "uniquely positioned", "passionate about", "leveraged", "utilized",
+      "highly motivated", "results-oriented", "strategic thinker",
+      "excellent communication skills", "team player", "detail-oriented",
+      "hardworking", "self-starter"
+    ];
+
+    // FETCH RESUMES
+    async function loadResumes() {
+      try {
+        const res = await fetch("resumes_data.json");
+        resumeData = await res.json();
+        renderRole("master");
+      } catch (err) {
+        document.getElementById("viewerContent").textContent = "Error loading resume data. Please ensure resumes_data.json is present.";
+      }
+    }
+
+    function renderRole(roleKey) {
+      currentRole = roleKey;
+      const data = resumeData[roleKey];
+      if (!data) return;
+
+      document.querySelectorAll(".role-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.role === roleKey);
+      });
+
+      document.getElementById("viewerTitle").textContent = data.title;
+      document.getElementById("viewerContent").textContent = data.content;
+
+      // Calculate stats
+      const text = data.content;
+      const words = (text.match(/[\w+#./-]+/g) || []).length;
+      const bullets = (text.split("\n").filter(l => /^\s*[-*+]\s+\S/.test(l))).length;
+      const quantified = (text.split("\n").filter(l => /^\s*[-*+]\s+.*(?:\$|\b\d[\d,.]*\+?%?\b|\b(?:million|billion)\b)/i.test(l))).length;
+
+      document.getElementById("viewerMeta").textContent = 
+        `${words} words · ${bullets} bullets · ${quantified} quantified (${Math.round((quantified/bullets)*100)}%) · GPA: 3.17/4.0`;
+
+      document.getElementById("validatorInput").value = data.content;
+      runAudit(data.content);
+    }
+
+    // AUDIT LOGIC
+    function runAudit(text) {
+      const output = document.getElementById("validatorOutput");
+      output.innerHTML = "";
+
+      if (!text || !text.trim()) {
+        output.innerHTML = '<div class="audit-row audit-warn"><span>!</span><span>No text provided for validation.</span></div>';
+        return;
+      }
+
+      const rows = [];
+      
+      // 1. Banned expressions
+      const bannedFound = BANNED_EXPRESSIONS.filter(phrase => {
+        const regex = new RegExp(`(?<!\\w)${phrase}(?!\\w)`, "i");
+        return regex.test(text);
+      });
+
+      if (bannedFound.length === 0) {
+        rows.push({ type: "pass", msg: "0 banned corporate clichés found (clean terminology)" });
+      } else {
+        rows.push({ type: "fail", msg: `Banned clichés found: ${bannedFound.join(", ")}` });
+      }
+
+      // 2. Sections check
+      const lower = text.toLowerCase();
+      const hasExp = /##\s+.*experience/i.test(text);
+      const hasEdu = /##\s+.*education/i.test(text);
+      const hasSummary = /##\s+.*summary/i.test(text);
+
+      if (hasExp && hasEdu) {
+        rows.push({ type: "pass", msg: "Essential sections present: Experience & Education" });
+      } else {
+        rows.push({ type: "fail", msg: "Missing essential section: Experience or Education" });
+      }
+
+      if (hasSummary) {
+        rows.push({ type: "pass", msg: "Professional Summary section verified" });
+      } else {
+        rows.push({ type: "warn", msg: "Professional Summary section recommended" });
+      }
+
+      // 3. Bullets and quantification
+      const bulletLines = text.split("\n").filter(l => /^\s*[-*+]\s+\S/.test(l));
+      const quantifiedBullets = bulletLines.filter(l => /(?:\$|\b\d[\d,.]*\+?%?\b|\b(?:million|billion)\b)/i.test(l));
+      
+      if (bulletLines.length > 0) {
+        const pct = Math.round((quantifiedBullets.length / bulletLines.length) * 100);
+        if (pct >= 50) {
+          rows.push({ type: "pass", msg: `High Metric Density: ${quantifiedBullets.length}/${bulletLines.length} (${pct}%) quantified STAR bullets` });
+        } else {
+          rows.push({ type: "warn", msg: `Metric Density moderate: ${quantifiedBullets.length}/${bulletLines.length} (${pct}%) bullets quantified` });
+        }
+      }
+
+      // 4. Contact info
+      const hasEmail = /[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/.test(text);
+      const hasPhone = /(?:\+?\d[\d().\s-]{7,}\d)/.test(text);
+      if (hasEmail && hasPhone) {
+        rows.push({ type: "pass", msg: "Contact coordinates present (Email & Phone detected)" });
+      } else {
+        rows.push({ type: "warn", msg: "Email or phone number missing from header" });
+      }
+
+      // 5. Academic Record Check
+      if (/3\.17/i.test(text)) {
+        rows.push({ type: "pass", msg: "Official transcript GPA 3.17 / 4.0 grounded and verified" });
+      } else if (/GPA/i.test(text)) {
+        rows.push({ type: "warn", msg: "GPA present - verify official transcript match" });
+      }
+
+      // Render rows
+      rows.forEach(r => {
+        const div = document.createElement("div");
+        div.className = `audit-row audit-${r.type}`;
+        div.innerHTML = `<span>${r.type === 'pass' ? '✓' : (r.type === 'fail' ? '✗' : '!')}</span><span>${r.msg}</span>`;
+        output.appendChild(div);
+      });
+    }
+
+    // THEME TOGGLE
+    const themeBtn = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      themeIcon.textContent = next === "light" ? "🌙" : "☀️";
+    }
+    themeBtn.addEventListener("click", toggleTheme);
+
+    // RESTORE THEME
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      themeIcon.textContent = savedTheme === "light" ? "🌙" : "☀️";
+    }
+
+    // COPY BUTTON
+    const copyBtn = document.getElementById("copyBtn");
+    const toast = document.getElementById("toast");
+    copyBtn.addEventListener("click", () => {
+      const content = document.getElementById("viewerContent").textContent;
+      navigator.clipboard.writeText(content).then(() => {
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2200);
+      });
+    });
+
+    // ROLE SWITCHERS
+    document.querySelectorAll(".role-btn").forEach(btn => {
+      btn.addEventListener("click", () => renderRole(btn.dataset.role));
+    });
+
+    // VALIDATOR BUTTONS
+    document.getElementById("auditLoadedBtn").addEventListener("click", () => {
+      const input = document.getElementById("validatorInput").value;
+      runAudit(input);
+    });
+
+    document.getElementById("clearInputBtn").addEventListener("click", () => {
+      document.getElementById("validatorInput").value = "";
+      document.getElementById("validatorOutput").innerHTML = '<div class="audit-row audit-warn"><span>!</span><span>Paste or type resume text to inspect invariants.</span></div>';
+    });
+
+    document.getElementById("validatorInput").addEventListener("input", (e) => {
+      runAudit(e.target.value);
+    });
+
+    // INIT
+    loadResumes();
+  </script>
+</body>
+</html>

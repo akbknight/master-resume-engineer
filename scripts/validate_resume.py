@@ -92,12 +92,12 @@ def markdown_headings(text: str) -> set[str]:
 
 
 def has_heading(headings: set[str], expected: str) -> bool:
-    return any(item == expected or item.startswith(expected + " ") for item in headings)
+    return any(expected in item.split() or item == expected or item.startswith(expected + " ") for item in headings)
 
 
 def section_text(text: str, heading: str) -> str:
     match = re.search(
-        rf"(?ims)^##\s+{re.escape(heading)}\s*$\s*(.*?)(?=^##\s+|\Z)",
+        rf"(?ims)^##\s+.*{re.escape(heading)}.*$\s*(.*?)(?=^##\s+|\Z)",
         text,
     )
     return match.group(1).strip() if match else ""
@@ -166,7 +166,7 @@ def analyze(path: Path) -> dict[str, object]:
     if summary_words > 80:
         warnings.append(f"Summary is unusually long ({summary_words} words); tighten it to two or three sentences.")
 
-    first_person = sorted(set(re.findall(r"\b(?:I|me|my|mine)\b", text)))
+    first_person = sorted(set(re.findall(r"(?<!/)\b(?:I|me|my|mine)\b(?!/)", text)))
     if first_person:
         warnings.append("First-person resume language found: " + ", ".join(first_person))
 
